@@ -406,29 +406,31 @@
 
   // ── DETEKSI POLISI ────────────────────────────────────
   function isPolice(props) {
-    const name    = (props.name || '').toLowerCase();
-    const amenity = (props.amenity || '').toLowerCase();
-    const office  = (props.office || '').toLowerCase();
+  const name    = (props.name || '').toLowerCase();
+  const amenity = (props.amenity || '').toLowerCase();
+  const office  = (props.office || '').toLowerCase();
 
-    return (
-      amenity.includes('police') ||
-      office.includes('police') ||
-      /\bpolsek\b|\bpolres\b|\bpolda\b|\bpolresta\b|\bkepolisian\b/.test(name)
-    );
-  }
+  return (
+    amenity.includes('police') ||
+    office.includes('police') ||
+    /\bpolsek\b|\bpolres\b|\bpolda\b|\bpolresta\b|\bpolsesta\b|\bkepolisian\b|\bpolisi\b/.test(name)
+  );
+}
 
-  // ── DETEKSI MILITER ───────────────────────────────────
-  function isMilitary(props) {
-    const name    = (props.name || '').toLowerCase();
-    const amenity = (props.amenity || '').toLowerCase();
+function isMilitary(props) {
+  const name    = (props.name || '').toLowerCase();
+  const amenity = (props.amenity || '').toLowerCase();
 
-    return (
-      props.military !== undefined ||
-      (props.landuse || '').toLowerCase().includes('military') ||
-      /\btni\b|militer|koramil|kodim|korem|kodam|barak|batalyon|markas|angkatan laut|angkatan darat|angkatan udara|lanal|lanud|\bpom\b|provost/.test(name) ||
-      amenity.includes('military')
-    );
-  }
+  // polisi dicek duluan, jadi polres tidak akan masuk sini
+  if (isPolice(props)) return false;
+
+  return (
+    props.military !== undefined ||
+    (props.landuse || '').toLowerCase().includes('military') ||
+    /\btni\b|militer|koramil|kodim|korem|kodam|barak|batalyon|markas|angkatan laut|angkatan darat|angkatan udara|lanal|lanud|\bpom\b|provost/.test(name) ||
+    amenity.includes('military')
+  );
+}
 
   fetch('data/Pos_Keamanan_Kota_Jayapura.geojson')
     .then(r => {
